@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { MainComponent } from './main/main.component';
 
 export const routes: Routes = [
   {
@@ -10,4 +11,14 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
+  {
+    path: 'item-list',
+    loadComponent: () => import('./item-list/item-list.page').then( m => m.ItemListPage)
+  },
+  {
+    path: 'main',
+    component:MainComponent
+  },
+ 
+  
 ];
