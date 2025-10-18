@@ -1,15 +1,67 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Math Quiz
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-app>
+  <ion-content class="ion-padding">
 
-<ion-content [fullscreen]="true">
-  <div id="container">
-    <ion-button [routerLink]="['/main']">Start</ion-button>
-    <ion-button [routerLink]="['/item-list']">Difficulty</ion-button>
-  </div>
-  
-</ion-content>
+    <ng-container *ngIf="gameState === GameState.NotStarted">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="ion-text-center">Math Skill Quiz</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content class="ion-text-center">
+          <p>
+            How fast can you answer 20 basic math (arithmetic) questions correctly?
+          </p>
+          <div>
+            <ion-label>Hard Mode</ion-label>
+            <ion-toggle [(ngModel)]="hardMode" color="danger"></ion-toggle>
+          </div>
+          <ion-button (click)="startGame()">Start</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </ng-container>
+
+    <ng-container *ngIf="gameState === GameState.Started">
+      <div class="ion-text-center">
+        <h2>Question {{ currentQuestionNumber }}</h2>
+        <p>{{ currentQuestion }}</p>
+
+        <ion-item style="width: 50%; margin: 0 auto;">
+          <ion-input [(ngModel)]="userAnswer" [placeholder]="isFocused ? '' : 'Type your answer'" (ionFocus)="onFocus()"
+            (ionBlur)="onBlur()" (keydown.enter)="submitAnswer()"></ion-input>
+        </ion-item>
+
+        <ion-button (click)="submitAnswer()">Submit</ion-button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="gameState === GameState.Finished">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="ion-text-center">Finished</ion-card-title>
+        </ion-card-header>
+        <ion-card-content class="ion-text-center">
+          <p>Time Taken: {{ timeTaken }} seconds</p>
+          <p>Accuracy: {{ accuracy }}%</p>
+
+          <ion-button color="primary" (click)="startGame()">Try Again</ion-button>
+          <ion-button color="medium" (click)="resetGame()">Return Home</ion-button>
+        </ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let result of questionHistory; index as i">
+            <ion-label>
+              <h3>Q{{ i + 1 }}: {{ result.question }}</h3>
+              <p>Your Answer: {{ result.userAnswer }}</p>
+              <p>Correct Answer: {{ result.correctAnswer }}</p>
+              <p>
+                <strong [style.color]="result.isCorrect ? 'green' : 'red'">
+                  {{ result.isCorrect ? 'Correct' : 'Incorrect' }}
+                </strong>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </ng-container>
+
+  </ion-content>
+</ion-app>
